@@ -1,0 +1,21 @@
+menu "My Toolbox"
+
+menu "Wifi"
+
+menu "Station mode (STA)"
+
+config MY_WIFI_STA_SSID
+    string "Wifi SSID"
+    help
+        SSID of the network to connect to.
+
+config MY_WIFI_STA_PASSWORD
+    string "Wifi password"
+    help
+        Password of the network to connect to.
+
+endmenu # Station mode (STA)
+
+endmenu # Wifi
+
+endmenu # My Toolbox
