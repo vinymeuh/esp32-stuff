@@ -3,6 +3,7 @@
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 
+#include "esp_log.h"
 #include "esp_system.h"
 #include "esp_spi_flash.h"
 
@@ -12,8 +13,10 @@
 
 void app_main()
 {
-    // initialize NVS
-    esp_err_t err = nvs_flash_init();
+    esp_err_t err;
+
+    // initialise NVS
+    err = nvs_flash_init();
     if (err == ESP_ERR_NVS_NO_FREE_PAGES) {
         ESP_ERROR_CHECK(nvs_flash_erase());
         err = nvs_flash_init();
@@ -21,7 +24,7 @@ void app_main()
     ESP_ERROR_CHECK(err);
 
     // start Wifi
-    initialise_wifi_sta();
+    ESP_ERROR_CHECK(initialise_wifi_sta("esp32-mdns"));
 
     // ESP chip info
     esp_chip_info_t chip_info;

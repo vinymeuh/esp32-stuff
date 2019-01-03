@@ -14,6 +14,7 @@
                 "/usr/local/esp32/esp-idf/components/lwip/include/apps",
                 "/usr/local/esp32/esp-idf/components/lwip/lwip/src/include",
                 "/usr/local/esp32/esp-idf/components/lwip/port/esp32/include",
+                "/usr/local/esp32/esp-idf/components/mdns/include",
                 "/usr/local/esp32/esp-idf/components/newlib/include",
                 "/usr/local/esp32/esp-idf/components/nvs_flash/include",
                 "/usr/local/esp32/esp-idf/components/soc/esp32/include",
