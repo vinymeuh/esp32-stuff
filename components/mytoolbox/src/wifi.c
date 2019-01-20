@@ -3,8 +3,15 @@
 #include "esp_wifi.h"
 
 #include "mdns.h"
+#include "nvs_flash.h"
+
+#include "mytoolbox/wifi.h"
 
 static const char* TAG = "toolbox_wifi_sta";
+
+/* FreeRTOS event group to signal when we are connected */
+EventGroupHandle_t wifi_event_group;
+const int WIFI_CONNECTED_BIT = BIT0;
 
 static esp_err_t wifi_event_handler(void *ctx, system_event_t *event) 
 {
@@ -17,9 +24,11 @@ static esp_err_t wifi_event_handler(void *ctx, system_event_t *event)
             }
             break;
         case SYSTEM_EVENT_STA_GOT_IP:
+            xEventGroupSetBits(wifi_event_group, WIFI_CONNECTED_BIT);
             break;
         case SYSTEM_EVENT_STA_DISCONNECTED:
             ESP_LOGW(TAG, "wifi sta disconnected");
+            xEventGroupClearBits(wifi_event_group, WIFI_CONNECTED_BIT);
             err = esp_wifi_connect();
             if (err) {
                 ESP_LOGW(TAG, "esp_wifi_connect(): %s", esp_err_to_name(err));
@@ -39,6 +48,15 @@ esp_err_t initialise_wifi_sta(const char* hostname)
     // reduce log verbosity for wifi
     esp_log_level_set("wifi", ESP_LOG_WARN);
 
+    err = nvs_flash_init();
+    if (err == ESP_ERR_NVS_NO_FREE_PAGES) {
+        ESP_ERROR_CHECK(nvs_flash_erase());
+        err = nvs_flash_init();
+    }
+    if (err) {
+        return err;
+    }
+
     // initialise mDNS
     err = mdns_init();
     if (err == ESP_OK) {
@@ -51,6 +69,9 @@ esp_err_t initialise_wifi_sta(const char* hostname)
     } else {
         ESP_LOGW(TAG, "mdns_init(): %s", esp_err_to_name(err));
     }
+
+    // initialise wifi event group
+    wifi_event_group = xEventGroupCreate();
 
     // Wi-Fi/LwIP Init Phase
     tcpip_adapter_init();
