@@ -1,15 +1,15 @@
 #include <stdio.h>
-
+#include "sdkconfig.h"
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 
 #include "esp_log.h"
 #include "esp_system.h"
-#include "esp_spi_flash.h"
-#include "nvs_flash.h"
+//#include "esp_spi_flash.h"
+//#include "nvs_flash.h"
 
-#include "mytoolbox/wifi.h"
-#include "mytoolbox/sensor/dht.h"
+//#include "mytoolbox/wifi.h"
+#include "dht.h"
 
 #define DHT_PIN 23
 #define MAIN_LOOP_PERIOD_S 60
@@ -46,6 +46,6 @@ void app_main()
             default:
                 ESP_LOGE(TAG, "unknown error !");
         }
-        vTaskDelay(MAIN_LOOP_PERIOD_S * 1000 / portTICK_RATE_MS);
+        vTaskDelay(MAIN_LOOP_PERIOD_S * 1000 / portTICK_PERIOD_MS);
     }
 }

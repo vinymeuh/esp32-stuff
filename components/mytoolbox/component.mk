@@ -1,2 +1,0 @@
-COMPONENT_SRCDIRS := src src/sensor
-COMPONENT_ADD_INCLUDEDIRS := include

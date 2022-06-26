@@ -1,11 +1,11 @@
-#include "esp_event_loop.h"
+#include "esp_event.h"
 #include "esp_log.h"
 #include "esp_wifi.h"
 
 #include "mdns.h"
 #include "nvs_flash.h"
 
-#include "mytoolbox/wifi.h"
+#include "wifi.h"
 
 static const char* TAG = "toolbox_wifi_sta";
 

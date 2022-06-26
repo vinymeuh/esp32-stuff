@@ -36,7 +36,7 @@
 
 #include "driver/gpio.h"
 
-#include "mytoolbox/sensor/dht.h"
+#include "dht.h"
 
 // all timings used for data transmission
 #define DHT_START_SIGNAL_LOW_TIME_US    20000
@@ -57,7 +57,7 @@ static inline dht_err_t wait_on_pin(int pin, int state, int timeout, int* durati
             return DHT_ERR_TIMEOUT;
         }
         timer += 1;
-        ets_delay_us(1);
+        esp_rom_delay_us(1);
     }
     if (duration) {
         *duration = timer;
@@ -84,9 +84,9 @@ dht_err_t dht_read(int pin, dht_measure_t* measure)
 
     // start signal
     gpio_set_level(pin, 0);
-    ets_delay_us(DHT_START_SIGNAL_LOW_TIME_US);
+    esp_rom_delay_us(DHT_START_SIGNAL_LOW_TIME_US);
     gpio_set_level(pin, 1);
-    ets_delay_us(DHT_START_SIGNAL_HIGH_TIME_US);
+    esp_rom_delay_us(DHT_START_SIGNAL_HIGH_TIME_US);
 
     // switch direction to reception mode
     gpio_set_direction(pin, GPIO_MODE_INPUT);
