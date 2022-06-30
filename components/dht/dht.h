@@ -1,35 +1,40 @@
 #ifndef __MY_TOOLBOX_SENSOR_DHT_H__
 #define __MY_TOOLBOX_SENSOR_DHT_H__
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+#include "driver/gpio.h"
 
-/* error type */
-typedef enum 
-{
-    DHT_OK = 0,
-    DHT_ERR_INVALID_PIN,
-    DHT_ERR_TIMEOUT,
-    DHT_ERR_RESPONSE_TIMEOUT,
-    DHT_ERR_GETREADY_TIMEOUT,
-    DHT_ERR_START_READ_BIT_TIMEOUT,
-    DHT_ERR_READ_BIT_TIMEOUT,
-    DHT_ERR_CHECKSUM
-} dht_err_t;
+namespace dht {
 
-/* measure */
-typedef struct 
-{
-    float   humidity;
-    float   temperature;
-    uint8_t crc;
-} dht_measure_t;
+enum class Error {
+    None = 0,
+    Checksum,
+    ResponseTimeout,
+    GetReadyTimeout,
+    StartReadBitTimeout,
+    ReadBitTimeout
+};
 
-dht_err_t dht_read(int pin, dht_measure_t* measure);
+struct Measure {
+    Measure() : humidity{0.0}, temperature{0.0}, error{Error::None}  {};
 
-#ifdef __cplusplus
-}
-#endif
+    float humidity;
+    float temperature;
+    Error error;
+};
 
+class Sensor {
+public:
+    Sensor(gpio_num_t pin);
+
+    dht::Measure collect();
+private:
+    gpio_num_t m_pin;
+
+    bool waitOnPin(bool state, uint timeout, uint* duration);
+    bool waitOnPin(bool state, uint timeout) {
+        return waitOnPin(state, timeout, nullptr);
+    };
+};
+
+} // namespace dht
 #endif
